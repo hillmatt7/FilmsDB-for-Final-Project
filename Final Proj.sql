@@ -1,5 +1,11 @@
 //this is a test
-
+DROP TABLE Buys;
+DROP TABLE Tickets;
+DROP TABLE Buyer;
+DROP TABLE Screenings;
+DROP TABLE Venues;
+DROP TABLE Films;
+DROP TABLE Directors;
 create table Directors (
     DirectorID INT PRIMARY KEY, 
     phone_num VARCHAR(15), 
@@ -25,8 +31,7 @@ create table Venues (
 
 create table Screenings (
     ScreeningID INT PRIMARY KEY, 
-    show_time FLOAT,                
-    show_date VARCHAR(10),               
+    show_date date,             
     FilmID INT,
     VenueID INT,
     FOREIGN KEY (FilmID) REFERENCES Films(FilmID),
@@ -54,8 +59,25 @@ create table Tickets (
 create table Buys (
     BuyerID INT,
     TicketID INT,
-    date_purchased VARCHAR(10),       
+    date_purchased date,       
     PRIMARY KEY (BuyerID, TicketID),
     FOREIGN KEY (BuyerID) REFERENCES Buyer(BuyerID),
     FOREIGN KEY (TicketID) REFERENCES Tickets(TicketID)
 );
+drop table ScreeningLog;
+CREATE TABLE ScreeningLog (
+    LogID INT PRIMARY KEY,
+    ScreeningID INt,
+    filmID int,
+    log_date date
+);
+
+//Trigger
+drop trigger log_screening_insert;
+CREATE TRIGGER log_screening_insert
+AFTER INSERT ON Screenings
+FOR EACH ROW
+BEGIN
+    INSERT INTO ScreeningLog VALUES (ScreeningID,FilmID,show_date);
+END;
+
