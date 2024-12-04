@@ -433,6 +433,16 @@ JOIN Screenings s ON t.ScreeningID = s.ScreeningID
 JOIN Venues v ON s.VenueID = v.VenueID
 WHERE v.venue_name = 'Home';
 
+-- nested query: Retrieves the titles and genres of films that are being screened on December 1st, 2024
+SELECT f.Title, f.Genre
+FROM Films f
+WHERE f.FilmID IN (
+    SELECT s.FilmID
+    FROM Screenings s
+    WHERE s.show_date = '2024-12-01'
+);
+
+
 select * from films;
 select * from directors;
 select * from screenings;
