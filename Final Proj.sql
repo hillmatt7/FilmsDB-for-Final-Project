@@ -101,6 +101,18 @@ BEGIN
 END;
 /
 
+--enforces a min price of $10
+CREATE OR REPLACE TRIGGER enforce_min_ticket_price
+BEFORE INSERT ON Tickets
+FOR EACH ROW
+BEGIN
+    IF :NEW.price < 10 THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Ticket price must be at least $10.');
+    END IF;
+END;
+/
+
+--adds a seat back if someone cancels
 CREATE OR REPLACE TRIGGER adjust_seats_on_cancel
 AFTER DELETE ON Tickets
 FOR EACH ROW
@@ -151,6 +163,7 @@ insert into tickets values(1,1,23.39,1,1);
 insert into tickets values(2,1,24.29,1,1);
 insert into tickets values(3,1,23.20,1,1);
 insert into tickets values(4,1,23,1,1);
+insert into tickets values(5,1,9,1,1);
 
 select v.seats_left
 from venues v , screenings s
