@@ -49,7 +49,7 @@ create table Buyer (
 );
 
 create table Tickets (
-    TicketID INT PRIMARY KEY,
+    TicketID INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     seat_Num INT unique,
     price FLOAT CHECK (price > 0),
     ScreeningID INT,
@@ -169,39 +169,58 @@ CREATE INDEX idx_film_title ON Films (Title);
 insert into directors values(1, '123-456-7890', 'John', 'Smith');
 insert into directors values(2, '234-567-8901', 'Jane', 'Doe');
 insert into directors values(3, '345-678-9012', 'Steven', 'Spielberg');
+insert into directors values(4, '585-595-5959', 'Hawk','Lindner');
 
 --films table
 insert into films values(1, 'Inception', 'Sci-Fi', 2010, 1);
 insert into films values(2, 'Titanic', 'Romance', 1997, 2);
 insert into films values(3, 'Jurassic Park', 'Adventure', 1993, 3);
 insert into films values(4, 'The Matrix', 'Action', 1999, 1);
+insert into films values(5, 'ATVSHIZ','Action',2000, 4);
 
 --venues table
 insert into venues values(1, 'Cinema One', 200, 200, '123 Main St');
 insert into venues values(2, 'The Grand Theater', 150, 150, '456 Elm St');
 insert into venues values(3, 'Downtown Cinema', 300, 300, '789 Oak St');
+insert into venues values(4, 'My Crib',300,300,'69 CRIB');
 
 --screenings table
 insert into screenings values(1, 14.00, '2024-12-01', 1, 1);
 insert into screenings values(2, 17.30, '2024-12-01', 2, 2);
 insert into screenings values(3, 20.00, '2024-12-02', 3, 3);
 insert into screenings values(4, 18.00, '2024-12-03', 4, 1);
+insert into screenings values(5, 10.30, '2024-12-04', 5, 4);
 
-select * from buyer;
 --buyers
 insert into buyer(fname,lname,price_payed) values('Alice', 'Johnson', 45.00);
 insert into buyer(fname,lname,price_payed) values('Bob', 'Smith', 50.00);
 insert into buyer(fname,lname,price_payed) values('Charlie', 'Brown', 60.00);
 insert into buyer(fname,lname,price_payed) values('Daisy', 'Miller', 70.00);
+insert into buyer(fname,lname,price_payed) values('WorldWide','Dan',50.00);
 
 --tickets table
-insert into tickets values(1, 101, 15.00, 1, 1);
-insert into tickets values(2, 102, 20.00, 1, 2);
-insert into tickets values(3, 103, 25.00, 2, 3);
-insert into tickets values(4, 104, 30.00, 3, 4);
-insert into tickets values(5, 105, 35.00, 4, 1);
+insert into tickets(seat_num,price,screeningID,buyerID) values(101, 15.00, 1, 1);
+insert into tickets(seat_num,price,screeningID,buyerID) values(102, 20.00, 1, 2);
+insert into tickets(seat_num,price,screeningID,buyerID) values(103, 25.00, 2, 3);
+insert into tickets(seat_num,price,screeningID,buyerID) values(104, 30.00, 3, 4);
+insert into tickets(seat_num,price,screeningID,buyerID) values(105, 35.00, 4, 1);
+
+--bad ticket inserts
+insert into tickets(seat_num,price,screeningID,buyerID) values(100, 9.99, 5,4);
+
+delete from tickets where ticketid = 1;
 
 
+
+select * from directors;
+select * from films;
+select * from venues;
+select * from screenings;
+select * from buyer;
+select * from tickets;
+select * from buys;
+
+insert into tickets(seat_num,price,screeningID,buyerID) values(101, 15.00, 1, 1);
 
 ------------------------------------------------
 --selects how many seats are left from every venue for each screening from venues and screenings
@@ -421,10 +440,3 @@ select * from venues;
 select * from tickets;
 select * from buyer;
 select * from buys;
-
-
-
-
-
-
-
