@@ -303,7 +303,6 @@ SELECT * FROM ScreeningRevenue;
 
 
 --performance testing
---done by chatGPT, to help me understand the efficiency of my indexes
 EXPLAIN PLAN FOR
 SELECT * FROM Screenings WHERE show_date = '11-01-2024';
 
@@ -408,7 +407,6 @@ SELECT * FROM ScreeningRevenue;
 
 
 --performance testing
---done by chatGPT, to help me understand the efficiency of my indexes
 EXPLAIN PLAN FOR
 SELECT * FROM Screenings WHERE show_date = '11-01-2024';
 
