@@ -50,12 +50,13 @@ create table Buyer (
 
 create table Tickets (
     TicketID INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    seat_Num INT unique,
+    seat_Num INT,
     price FLOAT CHECK (price > 0),
     ScreeningID INT,
     BuyerID INT,
     FOREIGN KEY (ScreeningID) REFERENCES Screenings(ScreeningID) on delete cascade,
     FOREIGN KEY (BuyerID) REFERENCES Buyer(BuyerID)on delete set null
+    UNIQUE (ScreeningID, seat_Num)
 );
 
 create table Buys (
