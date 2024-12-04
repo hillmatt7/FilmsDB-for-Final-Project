@@ -35,7 +35,8 @@ create table Venues (
 create table Screenings (
     ScreeningID INT PRIMARY KEY, 
     show_time FLOAT,                
-    show_date VARCHAR(10),               
+    show_date VARCHAR(10),    
+    revenue FLOAT DEFAULT 0,
     FilmID INT,
     VenueID INT,
     FOREIGN KEY (FilmID) REFERENCES Films(FilmID),
@@ -100,6 +101,22 @@ BEGIN
     END IF;
 END;
 /
+
+CREATE or REPLACE TRIGGER update_rev
+before insert on tickets
+for each row
+declare
+    total_rev float;
+begin
+    select sum(price) into total_rev
+    from tickets
+    where screeningID =: new.screeningID;
+    
+    update screenings 
+    set revenue = total_rev
+    where screeningID =: new.screeningID;
+END;
+/
     
 select * from venues;
 
@@ -119,8 +136,8 @@ insert into films values(1,'Go','horror','2024',1);
 select * from screenings;
 
     
-insert into screenings values(1,10.00, '11-01-2024',1,1);
-insert into screenings values(2,20.00, '11-02-2024',1,2);
+insert into screenings values(1,10.00, '11-01-2024',0,1,1);
+insert into screenings values(2,20.00, '11-02-2024',0,1,2);
 
 
 select * from buyer;
