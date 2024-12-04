@@ -36,7 +36,6 @@ create table Screenings (
     ScreeningID INT PRIMARY KEY, 
     show_time FLOAT,                
     show_date VARCHAR(10),    
-    revenue FLOAT DEFAULT 0,
     FilmID INT,
     VenueID INT,
     FOREIGN KEY (FilmID) REFERENCES Films(FilmID),
@@ -71,7 +70,7 @@ create table Buys (
 
 -- Trigger to Update Seats
 CREATE OR REPLACE TRIGGER how_many_seats
-AFTER INSERT ON Tickets
+after INSERT ON Tickets
 FOR EACH ROW
 DECLARE
     seats_left INT;
@@ -102,21 +101,22 @@ BEGIN
 END;
 /
 
-CREATE or REPLACE TRIGGER update_rev
-before insert on tickets
-for each row
-declare
-    total_rev float;
-begin
-    select sum(price) into total_rev
-    from tickets
-    where screeningID =: new.screeningID;
-    
-    update screenings 
-    set revenue = total_rev
-    where screeningID =: new.screeningID;
+CREATE OR REPLACE TRIGGER adjust_seats_on_cancel
+AFTER DELETE ON Tickets
+FOR EACH ROW
+BEGIN
+    -- Increment the number of seats left
+    UPDATE Venues
+    SET seats_left = seats_left + 1
+    WHERE VenueID = (
+        SELECT VenueID
+        FROM Screenings
+        WHERE ScreeningID = :OLD.ScreeningID
+    );
 END;
 /
+
+
     
 select * from venues;
 
@@ -136,8 +136,8 @@ insert into films values(1,'Go','horror','2024',1);
 select * from screenings;
 
     
-insert into screenings values(1,10.00, '11-01-2024',0,1,1);
-insert into screenings values(2,20.00, '11-02-2024',0,1,2);
+insert into screenings values(1,10.00, '11-01-2024',1,1);
+insert into screenings values(2,20.00, '11-02-2024',1,2);
 
 
 select * from buyer;
@@ -146,12 +146,17 @@ insert into buyer(fname,lname,price_payed) values('Frank','franky',23.39);
 
 
 select * from tickets;
-
+--TRUNCATE TABLE tickets;
 insert into tickets values(1,1,23.39,1,1);
 insert into tickets values(2,1,24.29,1,1);
+insert into tickets values(3,1,23.20,1,1);
+insert into tickets values(4,1,23,1,1);
 
 select v.seats_left
 from venues v , screenings s
 where v.venueID = s.venueid;
 
+select *
+from screenings;
 
+delete tickets where ticketID = 1;
